@@ -1,16 +1,46 @@
 <script setup>
-import { defineProps } from 'vue';
+import {
+  ref, defineProps, onMounted, onUnmounted,
+} from 'vue';
 
 const props = defineProps({
   title: String,
   description: String,
   image: String,
+  parallax: Boolean,
+});
+
+const backgroundPosition = ref('50% 50%');
+
+function parallax() {
+  backgroundPosition.value = `50% ${50 - (window.scrollY / 100) * 1}%`;
+}
+
+onMounted(() => {
+  if (props.parallax) {
+    window.addEventListener('scroll', parallax);
+  }
+});
+
+onUnmounted(() => {
+  if (props.parallax) {
+    window.removeEventListener('scroll', parallax);
+  }
 });
 </script>
 
 <template>
   <section class="hero">
-    <img :src="props.image" alt="Hero image" />
+    <div
+      :class="{
+        'hero-image': true,
+        'hero-image--parallax': props.parallax,
+      }"
+      :style="{
+        'background-position': backgroundPosition,
+        'background-image': `url(${props.image})`,
+      }"
+    ></div>
     <div class="hero-text-wrapper">
       <h1>{{ props.title }}</h1>
       <p>{{ props.description }}</p>
@@ -21,24 +51,35 @@ const props = defineProps({
 <style lang="less" scoped>
 .hero {
   width: 100%;
-  height: calc(~'100vh - 104px');
+  height: calc(~"100vh - 104px");
   display: flex;
   align-items: center;
   flex-flow: row wrap;
 
-  img {
+  @media @smUp {
+    height: calc(~"100vh - 105px");
+  }
+
+  &-image {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
+    bottom: 0;
+    right: 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    &--parallax {
+      position: fixed;
+      background-attachment: fixed;
+    }
   }
 
   &-text-wrapper {
-    max-width: 30%;
-    h1, p {
+    max-width: 600px;
+    z-index: 2;
+    h1,
+    p {
       color: white;
     }
   }

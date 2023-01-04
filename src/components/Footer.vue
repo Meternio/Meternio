@@ -1,9 +1,13 @@
-<script setup></script>
+<script setup>
+import { ref } from 'vue';
+
+const year = ref(new Date().getFullYear());
+</script>
 
 <template>
   <footer>
     <div class="constrained">
-      <p>Copyright 2023 Meternio</p>
+      <p>Copyright {{year}} Meternio</p>
       <div>
         <a href="https://www.instagram.com/meternio/" target="_blank"
           ><font-awesome-icon icon="fa-brands fa-instagram"
@@ -22,8 +26,10 @@
 
 <style lang="less">
 footer {
-  background-color: #333;
-  color: #fff;
+  background-color: @gray;
+  color: @white;
+  position: relative;
+  z-index: 10;
 
   .constrained {
     display: flex;
@@ -41,7 +47,7 @@ footer {
   }
 
   a {
-    color: #fff;
+    color: @white;
     text-decoration: none;
     margin-right: 10px;
   }

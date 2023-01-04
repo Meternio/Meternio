@@ -9,7 +9,7 @@ function toggleDrawer() {
 </script>
 
 <template>
-  <header :class="{ 'drawer-shown': showDrawer }">
+  <header>
     <div class="constrained">
       <a href="/" class="logo" aria-label="Home">
         <img src="@/assets/logo_white.webp" height="40" alt="Logo" />
@@ -30,20 +30,24 @@ function toggleDrawer() {
         <font-awesome-icon icon="fa-solid fa-bars" />
         <span class="sr-only">Toggle mobile drawer</span>
       </button>
-      <nav
-        id="drawer"
-        class="drawer"
-        tabindex="-1"
-        role="menu"
-        aria-hidden="true"
-      >
-        <a href="#" role="menuitem">Home</a>
-        <a href="#" role="menuitem">Experience</a>
-        <a href="#" role="menuitem">Portfolio</a>
-        <a href="#" role="menuitem">Contact</a>
-        <a href="#" role="menuitem">Blog</a>
-      </nav>
-      <div class="drawer-background" @click="toggleDrawer"></div>
+      <div :class="{ drawer: true, 'drawer-shown': showDrawer }">
+        <nav class="drawer-nav" tabindex="-1" role="menu" aria-hidden="true">
+          <a href="/" class="drawer-nav-logo" aria-label="Home">
+            <img src="@/assets/logo_white.webp" height="40" alt="Logo" />
+          </a>
+          <a href="#" role="menuitem">Experience</a>
+          <a href="#" role="menuitem">Portfolio</a>
+          <a href="#" role="menuitem">Contact</a>
+          <a href="#" role="menuitem">Blog</a>
+          <font-awesome-icon
+            class="drawer-close"
+            @click="toggleDrawer"
+            aria-label="close menu"
+            icon="fa-solid fa-xmark"
+          />
+        </nav>
+        <div class="drawer-background" @click="toggleDrawer"></div>
+      </div>
     </div>
   </header>
 </template>
@@ -60,20 +64,6 @@ header {
   color: #fff;
   margin-top: 20px;
 
-  &.drawer-shown {
-    .drawer {
-      right: 0;
-
-      &-background {
-        display: block;
-
-        @media @mdUp {
-          display: none;
-        }
-      }
-    }
-  }
-
   .constrained {
     display: flex;
     align-items: center;
@@ -84,7 +74,6 @@ header {
   nav a {
     color: #fff;
     text-decoration: none;
-    margin-right: 20px;
     font-weight: bold;
   }
 
@@ -94,16 +83,9 @@ header {
     @media @mdUp {
       display: block;
     }
-  }
 
-  .drawer-toggle {
-    background-color: transparent;
-    border: 0;
-    color: white;
-    cursor: pointer;
-
-    @media @mdUp {
-      display: none;
+    a:not(:last-child) {
+      margin-right: 10px;
     }
   }
 
@@ -112,7 +94,6 @@ header {
     top: 0;
     right: -320px;
     bottom: 0;
-    background-color: #333;
     width: 320px;
     overflow: auto;
     z-index: 10;
@@ -120,6 +101,52 @@ header {
 
     @media @mdUp {
       display: none;
+    }
+
+    &.drawer-shown {
+      right: 0;
+
+      .drawer {
+        &-background {
+          display: block;
+
+          @media @mdUp {
+            display: none;
+          }
+        }
+      }
+    }
+
+    &-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    &-toggle {
+      background-color: transparent;
+      border: 0;
+      color: white;
+      cursor: pointer;
+
+      @media @mdUp {
+        display: none;
+      }
+    }
+
+    &-nav {
+      background-color: @gray;
+      z-index: 10;
+      position: relative;
+      height: 100%;
+
+      &-logo {
+        img {
+          margin: auto;
+          display: block;
+          padding: 20px 0;
+        }
+      }
     }
 
     &-background {
@@ -133,18 +160,18 @@ header {
       z-index: 9;
       display: none;
     }
-  }
 
-  .drawer a {
-    display: block;
-    color: white;
-    text-decoration: none;
-    padding: 10px;
-    border-bottom: 1px solid white;
-  }
+    a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      border-bottom: 1px solid white;
+    }
 
-  .drawer a:last-child {
-    border-bottom: 0;
+    a:last-child {
+      border-bottom: 0;
+    }
   }
 }
 </style>
