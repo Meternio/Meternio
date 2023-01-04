@@ -2,6 +2,7 @@
 import {
   ref, defineProps, onMounted, onUnmounted,
 } from 'vue';
+import { throttle } from '../functions/main';
 
 const props = defineProps({
   title: String,
@@ -10,27 +11,40 @@ const props = defineProps({
   parallax: Boolean,
 });
 
+const target = ref(null);
 const backgroundPosition = ref('50% 50%');
 
-function parallax() {
-  backgroundPosition.value = `50% ${50 - (window.scrollY / 100) * 1}%`;
+function checkInViewport(el) {
+  const rect = el.getBoundingClientRect();
+  return (
+    rect.bottom >= 0
+  );
 }
+
+function parallax() {
+  if (checkInViewport(target.value)) {
+    backgroundPosition.value = `50% ${50 - (window.scrollY / 100) * 3}%`;
+    console.log('test');
+  }
+}
+
+const throttledScroll = throttle(parallax, 20);
 
 onMounted(() => {
   if (props.parallax) {
-    window.addEventListener('scroll', parallax);
+    window.addEventListener('scroll', throttledScroll);
   }
 });
 
 onUnmounted(() => {
   if (props.parallax) {
-    window.removeEventListener('scroll', parallax);
+    window.removeEventListener('scroll', throttledScroll);
   }
 });
 </script>
 
 <template>
-  <section class="hero">
+  <section class="hero" ref="target">
     <div
       :class="{
         'hero-image': true,
@@ -70,7 +84,6 @@ onUnmounted(() => {
     background-repeat: no-repeat;
 
     &--parallax {
-      position: fixed;
       background-attachment: fixed;
     }
   }
