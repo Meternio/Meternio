@@ -1,6 +1,22 @@
+const path = require('path');
+
+function addStyleResource(rule) {
+  rule.use('style-loader', 'css-loader', 'less-loader')
+    .loader('style-resources-loader')
+    .options({
+      patterns: [
+        path.resolve(__dirname, './src/styles/global.less'),
+      ],
+    });
+}
+
 module.exports = {
   pwa: {
     themeColor: '#01579b',
+  },
+  chainWebpack: (config) => {
+    const types = ['vue-modules', 'vue', 'normal-modules', 'normal'];
+    types.forEach(type => addStyleResource(config.module.rule('less').oneOf(type)));
   },
   css: {
     loaderOptions: {
@@ -9,22 +25,7 @@ module.exports = {
         // http://lesscss.org/usage/#less-options-strict-units `Global Variables`
         // `primary` is global variables fields name
         globalVars: {
-          primary: '#ff6f00',
-          light: '#ffa040',
-          dark: '#c43e00',
 
-          secondary: '#ffea00',
-          secondaryLight: '#ffff56',
-          secondaryDark: '#c7b800',
-
-          positive: '#2e7d32',
-          negative: '#c62828',
-          info: '#0277bd',
-          warning: '#f57f17',
-
-          white: '#fff',
-          black: '#000',
-          gray: '#e0e0e0',
         },
       },
     },
